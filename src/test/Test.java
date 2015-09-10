@@ -13,9 +13,11 @@ import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 
 import edu.wpi.checksims.Java8BaseVisitor;
+import edu.wpi.checksims.Java8Lexer;
 import edu.wpi.checksims.Java8Parser;
 import edu.wpi.checksims.Java8Parser.ClassDeclarationContext;
 
@@ -39,6 +41,8 @@ public class Test
         unorderedTypes.add(Java8Parser.ClassBodyDeclarationContext.class);
         
         nodes.add(Java8Parser.ClassModifierContext.class);
+        nodes.add(Java8Parser.MethodModifierContext.class);
+        nodes.add(Java8Parser.FormalParameterContext.class);
     }
     
     
@@ -57,13 +61,9 @@ public class Test
         public AST visitChildren(RuleNode rn)
         {
             String callerName = Thread.currentThread().getStackTrace()[3].getMethodName();
-            
-            
             ParserRuleContext prc = (ParserRuleContext) rn;
-            Stream<AST> sub = prc.children.stream().map(PT -> PT.accept(this));
+            Stream<AST> sub = prc.children.stream().map(PT -> acceptorPass(PT));
             Class<?> paramType = myMethods.get(callerName).getParameters()[0].getType();
-            
-            System.out.println(paramType.getSimpleName());
             if (unorderedTypes.contains(paramType))
             {
                 return new AST.UnorderedAST(sub);
@@ -72,8 +72,17 @@ public class Test
             {
                 return new AST.NodeAST(rn.getText());
             }
-            
             return new AST.OrderedAST(sub);
-        } 
+        }
+        
+        private AST acceptorPass(ParseTree PT)
+        {
+            AST result = PT.accept(this);
+            if (result == null)
+            {
+                return new AST.NodeAST(PT.getText());
+            }
+            return result;
+        }
     }
 }
