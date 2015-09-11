@@ -1,25 +1,3 @@
-package test;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.RuleNode;
-
-import edu.wpi.checksims.Java8BaseVisitor;
-import edu.wpi.checksims.Java8Parser;
-import edu.wpi.checksims.Java8Parser.ClassDeclarationContext;
-
 public class Test
 {
     public static void main(String ... args) throws FileNotFoundException, IOException
@@ -37,18 +15,6 @@ public class Test
         
         System.out.println(r);
     }
-    
-    private final static Set<Class<?>> unorderedTypes = new HashSet<>();
-    private final static Set<Class<?>> nodes = new HashSet<>();
-    static
-    {
-        unorderedTypes.add(Java8Parser.ClassBodyDeclarationContext.class);
-        
-        nodes.add(Java8Parser.ClassModifierContext.class);
-        nodes.add(Java8Parser.MethodModifierContext.class);
-        nodes.add(Java8Parser.FormalParameterContext.class);
-    }
-    
     
     public static class ReflectiveDynamicTreeWalker extends Java8BaseVisitor<AST>
     {
