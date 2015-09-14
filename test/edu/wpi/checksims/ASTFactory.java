@@ -1,4 +1,4 @@
-package test;
+package edu.wpi.checksims;
 
 import org.antlr.v4.runtime.*;
 

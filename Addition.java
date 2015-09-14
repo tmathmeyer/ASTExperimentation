@@ -1,7 +1,16 @@
-public class Example
+public class Author
 {
-    public int function()
+    private int TEXT = 3;
+    
+    public static void main(String[] args)
     {
-        return 5+5;
+        System.out.println("My Name is Ted");
+        exampleFunction(3, 4, 5);
+    }
+
+    public void exampleFunction(int a, int b, int c)
+    {
+        System.out.println(a+b);
+        System.out.println(b+c);
     }
 }

@@ -1,10 +1,11 @@
-package test;
+package edu.wpi.checksims;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface AST
@@ -58,9 +59,14 @@ public interface AST
             sub.forEach(AST -> contains.add(AST));
         }
         
+        public List<AST> getBody()
+        {
+            return contains;
+        }
+        
         public String toString()
         {
-            return "o"+contains;
+            return "("+contains.stream().map(I -> I+"").collect(Collectors.joining(" "))+")";
         }
 
         @Override
@@ -129,7 +135,7 @@ public interface AST
         
         public String toString()
         {
-            return "u"+contains;
+            return "("+contains.stream().map(I -> I.toString()).collect(Collectors.joining(" "))+")";
         }
 
         @Override

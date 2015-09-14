@@ -1,4 +1,4 @@
-package test;
+package edu.wpi.checksims;
 
 /**
  * Created by ted on 12/19/14.
