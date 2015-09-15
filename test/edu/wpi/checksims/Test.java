@@ -24,13 +24,19 @@ public class Test
         //AST tb = cdcb.accept(new ReflectiveDynamicTreeWalker());
         
         AST ta = cdca.accept(new FullyImplementedTreeWalker());
-        //AST tb = cdcb.accept(new FullyImplementedTreeWalker());
-        
-        
-        //Real r = ta.compareToAST(tb);
+        AST tb = cdcb.accept(new FullyImplementedTreeWalker());
         
         System.out.println(ta);
+        System.out.println(tb);
         
-        //System.out.println(r);
+        Real r1 = ta.compareToAST(tb);
+        Real r2 = tb.compareToAST(ta);
+        
+        Real r3 = ta.compareToAST(ta);
+        
+        System.out.println(r1);
+        System.out.println(r2);
+        
+        System.out.println(r3);
     }
 }

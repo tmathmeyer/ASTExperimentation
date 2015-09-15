@@ -24,7 +24,7 @@ public interface AST
         @Override
         public Real compareUnorderedAST(UnorderedAST unorderedAST)
         {
-            Real r = new Real(-1, 0);
+            Real r = new Real(0, 0);
             for(AST t : unorderedAST.contains)
             {
                 r = r.simpleAverage(t.compareToAST(this));
@@ -56,7 +56,23 @@ public interface AST
         public List<AST> contains = new LinkedList<>();
         public OrderedAST(Stream<AST> sub)
         {
-            sub.forEach(AST -> contains.add(AST));
+            sub.forEach(AST -> add(AST));
+        }
+        
+        private void add(AST t)
+        {
+            if (t != null)
+            {
+                contains.add(t);
+            }
+        }
+        
+        public OrderedAST(AST ... asts)
+        {
+            for(AST t : asts)
+            {
+                contains.add(t);
+            }
         }
         
         public List<AST> getBody()
@@ -128,14 +144,36 @@ public interface AST
     public static class UnorderedAST implements AST
     {
         private final Set<AST> contains = new HashSet<>();
+        boolean Null = false;
         public UnorderedAST(Stream<AST> sub)
         {
-            sub.forEach(AST -> contains.add(AST));
+            sub.forEach(AST -> add(AST));
+            if (Null)
+            {
+                System.out.println(contains);
+            }
         }
         
+        private void add(AST t)
+        {
+            if (t == null)
+            {
+                Null = true; return;
+            }
+            contains.add(t);
+        }
+        
+        public UnorderedAST(AST ... asts)
+        {
+            for(AST t : asts)
+            {
+                contains.add(t);
+            }
+        }
+
         public String toString()
         {
-            return "("+contains.stream().map(I -> I.toString()).collect(Collectors.joining(" "))+")";
+            return "("+contains.stream().map(I -> ""+I).collect(Collectors.joining(" "))+")";
         }
 
         @Override
@@ -154,22 +192,17 @@ public interface AST
         public Real compareUnorderedAST(UnorderedAST unorderedAST)
         {
             Real r = new Real(0, 0);
-            Iterator<AST> a = this.contains.iterator();
-            Iterator<AST> b = unorderedAST.contains.iterator();
-            while(a.hasNext() || b.hasNext())
+            for(AST aa : contains)
             {
-                AST A = new BlankAST(), B = new BlankAST();
-                if (a.hasNext())
+                Real row = new Real(0, 0);
+                for(AST bb : unorderedAST.contains)
                 {
-                    A = a.next();
+                    row = row.simpleAverage(aa.compareToAST(bb).squareNumerator().squareNumerator());
                 }
-                if (b.hasNext())
-                {
-                    B = b.next();
-                }
-                r = r.simpleAverage(A.compareToAST(B));
+                r = r.simpleAverage(row.sqrtNumerator().sqrtNumerator());
             }
-            return r;
+            
+            return r.divideDenominator((contains.size()+unorderedAST.contains.size())/2);
         }
 
         @Override

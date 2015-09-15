@@ -9,6 +9,7 @@ import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 
+import edu.wpi.checksims.AST.NodeAST;
 import edu.wpi.checksims.AST.OrderedAST;
 import edu.wpi.checksims.Java8Parser.AdditiveExpressionContext;
 import edu.wpi.checksims.Java8Parser.AndExpressionContext;
@@ -27,12 +28,17 @@ import edu.wpi.checksims.Java8Parser.ConditionalOrExpressionContext;
 import edu.wpi.checksims.Java8Parser.EqualityExpressionContext;
 import edu.wpi.checksims.Java8Parser.ExclusiveOrExpressionContext;
 import edu.wpi.checksims.Java8Parser.ExpressionContext;
+import edu.wpi.checksims.Java8Parser.ExpressionNameContext;
 import edu.wpi.checksims.Java8Parser.ExpressionStatementContext;
+import edu.wpi.checksims.Java8Parser.FieldDeclarationContext;
 import edu.wpi.checksims.Java8Parser.FormalParameterContext;
 import edu.wpi.checksims.Java8Parser.FormalParameterListContext;
 import edu.wpi.checksims.Java8Parser.FormalParametersContext;
 import edu.wpi.checksims.Java8Parser.InclusiveOrExpressionContext;
 import edu.wpi.checksims.Java8Parser.LastFormalParameterContext;
+import edu.wpi.checksims.Java8Parser.LiteralContext;
+import edu.wpi.checksims.Java8Parser.LocalVariableDeclarationContext;
+import edu.wpi.checksims.Java8Parser.LocalVariableDeclarationStatementContext;
 import edu.wpi.checksims.Java8Parser.MethodBodyContext;
 import edu.wpi.checksims.Java8Parser.MethodDeclarationContext;
 import edu.wpi.checksims.Java8Parser.MethodDeclaratorContext;
@@ -41,6 +47,8 @@ import edu.wpi.checksims.Java8Parser.MethodInvocationContext;
 import edu.wpi.checksims.Java8Parser.MultiplicativeExpressionContext;
 import edu.wpi.checksims.Java8Parser.NormalClassDeclarationContext;
 import edu.wpi.checksims.Java8Parser.PostfixExpressionContext;
+import edu.wpi.checksims.Java8Parser.PrimaryContext;
+import edu.wpi.checksims.Java8Parser.PrimaryNoNewArray_lfno_primaryContext;
 import edu.wpi.checksims.Java8Parser.RelationalExpressionContext;
 import edu.wpi.checksims.Java8Parser.ShiftExpressionContext;
 import edu.wpi.checksims.Java8Parser.StatementContext;
@@ -48,6 +56,9 @@ import edu.wpi.checksims.Java8Parser.StatementExpressionContext;
 import edu.wpi.checksims.Java8Parser.StatementWithoutTrailingSubstatementContext;
 import edu.wpi.checksims.Java8Parser.UnaryExpressionContext;
 import edu.wpi.checksims.Java8Parser.UnaryExpressionNotPlusMinusContext;
+import edu.wpi.checksims.Java8Parser.VariableDeclaratorContext;
+import edu.wpi.checksims.Java8Parser.VariableDeclaratorListContext;
+import edu.wpi.checksims.Java8Parser.VariableInitializerContext;
 
 public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
 {
@@ -82,7 +93,7 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
             }
         }
         
-        return null;
+        throw new RuntimeException("NULL");
     }
     
     @Override
@@ -131,12 +142,14 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
             //System.out.println();
             switch(pt.getClass().getSimpleName())
             {
-                //case "FieldDeclarationContext":
+                case "FieldDeclarationContext":
                 case "MethodDeclarationContext":
                 //case "ClassDeclarationContext":
                 //case "InterfaceDeclarationContext":
                     return pt.accept(this);
             }
+            
+            System.out.println(pt.getClass().getSimpleName());
         }
         
         return null;
@@ -343,7 +356,7 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         else
         {
             //TODO ternary expression
-            return null;
+            throw new RuntimeException("NULL");
         }
     }
     
@@ -356,8 +369,11 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO or expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
         }
     }
     
@@ -370,8 +386,11 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO or expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
         }
     }
     
@@ -384,8 +403,11 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO inc-or expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
         }
     }
     
@@ -398,8 +420,11 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO xor expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
         }
     }
     
@@ -412,8 +437,11 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO and expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
         }
     }
     
@@ -426,9 +454,17 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO equal/nequal expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            switch(ctx.children.get(1).getText())
+            {
+                case "==": return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
+                case "!=": return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
+            }
         }
+        throw new RuntimeException(ctx.children.get(1).getText());
     }
     
     @Override
@@ -440,8 +476,11 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO gt/lt/gte/lte/instanceof expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            return new AST.OrderedAST(op, new OrderedAST(left, right));
         }
     }
     
@@ -454,8 +493,11 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO bitshift expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            return new AST.OrderedAST(op, new OrderedAST(left, right));
         }
     }
     
@@ -468,9 +510,17 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO +/- expression
-            return null;
+            AST left = ctx.children.get(0).accept(this);
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST right = ctx.children.get(2).accept(this);
+            
+            switch(ctx.children.get(1).getText())
+            {
+                case "+": return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
+                case "-": return new AST.OrderedAST(op, new OrderedAST(left, right));
+            }
         }
+        throw new RuntimeException(ctx.children.get(1).getText());
     }
     
     @Override
@@ -482,9 +532,18 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
-            //TODO * / % expression
-            return null;
+            AST op = new NodeAST(ctx.getChild(1).getText());
+            AST left = ctx.children.get(0).accept(this);
+            AST right = ctx.children.get(2).accept(this);
+            
+            switch(ctx.children.get(1).getText())
+            {
+                case "*": return new AST.OrderedAST(op, new AST.UnorderedAST(left, right));
+                case "/": return new AST.OrderedAST(op, new OrderedAST(left, right));
+                case "%": return new AST.OrderedAST(op, new OrderedAST(left, right));
+            }
         }
+        throw new RuntimeException(ctx.children.get(1).getText());
     }
     
     @Override
@@ -496,8 +555,9 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         }
         else
         {
+            
             //TODO + - expression
-            return null;
+            throw new RuntimeException("NULL");
         }
     }
     
@@ -511,21 +571,142 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
         else
         {
             //TODO + - expression
-            return null;
+            throw new RuntimeException("NULL");
         }
     }
     
     @Override
     public AST visitPostfixExpression(PostfixExpressionContext ctx)
     {
+        if (ctx.children.size() == 1)
+        {
+            return ctx.children.get(0).accept(this);
+        }
+        else
+        {
+            //TODO not sure?
+            throw new RuntimeException("NULL");
+        }
+    }
+    
+    @Override
+    public AST visitPrimary(PrimaryContext ctx)
+    {
+        if (ctx.children.size() == 1)
+        {
+            return ctx.children.get(0).accept(this);
+        }
+        else
+        {
+            //TODO primaryNoNewArray_lf_primary / arrayCreationExpression
+            throw new RuntimeException("NULL");
+        }
+    }
+    
+    @Override
+    public AST visitPrimaryNoNewArray_lfno_primary(PrimaryNoNewArray_lfno_primaryContext ctx)
+    {
+        if (ctx.children.size() == 1)
+        {
+            return ctx.children.get(0).accept(this);
+        }
+        else
+        {
+            //TODO see java8.g4 line 1013
+            throw new RuntimeException("NULL");
+        }
+    }
+    
+    @Override
+    public AST visitLiteral(LiteralContext ctx)
+    {
+        return new AST.NodeAST(ctx.getText());
+    }
+    
+    @Override
+    public AST visitExpressionName(ExpressionNameContext ctx)
+    {
+        if (ctx.getChild(0).getClass().getSimpleName().equals("TerminalNodeImpl"))
+        {
+            return new AST.NodeAST(ctx.getText());
+        }
+
+        throw new RuntimeException("NULL");
+    }
+    
+    public AST visitLocalVariableDeclarationStatement(LocalVariableDeclarationStatementContext ctx)
+    {
+        return ctx.children.get(0).accept(this);
+    }
+    
+    @Override
+    public AST visitVariableDeclaratorList(VariableDeclaratorListContext ctx)
+    {
+        List<AST> result = new LinkedList<AST>();
         for(ParseTree pt : ctx.children)
         {
-            System.out.println(pt.getClass().getSimpleName());
-            System.out.println(pt.getText());
-            System.out.println();
+            if (pt.getClass().getSimpleName().equals("VariableDeclaratorContext"))
+            {
+                result.add(pt.accept(this));
+            }
         }
-        return null;
+        return new OrderedAST(result.stream());
     }
+    
+    @Override
+    public AST visitLocalVariableDeclaration(LocalVariableDeclarationContext ctx)
+    {
+        List<AST> result = new LinkedList<AST>();
+        
+        for(ParseTree pt : ctx.children)
+        {
+            switch(pt.getClass().getSimpleName())
+            {
+                case "UnannTypeContext":
+                    result.add(new NodeAST(pt.getText()));
+                    break;
+                case "VariableDeclaratorListContext":
+                    result.addAll(((OrderedAST)pt.accept(this)).getBody());
+                    break;
+            }
+        }
+        return new OrderedAST(result.stream());
+    }
+    
+    @Override
+    public AST visitVariableDeclarator(VariableDeclaratorContext ctx)
+    {
+        return ctx.getChild(2).accept(this);
+    }
+    
+    @Override
+    public AST visitVariableInitializer(VariableInitializerContext ctx)
+    {
+        return ctx.getChild(0).accept(this);
+    }
+    
+    @Override
+    public AST visitFieldDeclaration(FieldDeclarationContext ctx)
+    {
+        List<AST> result = new LinkedList<AST>();
+        
+        for(ParseTree pt : ctx.children)
+        {
+            switch(pt.getClass().getSimpleName())
+            {
+                case "UnannTypeContext":
+                    result.add(new NodeAST(pt.getText()));
+                    break;
+                case "VariableDeclaratorListContext":
+                    result.addAll(((OrderedAST)pt.accept(this)).getBody());
+                    break;
+            }
+        }
+        return new OrderedAST(result.stream());
+    }
+    
+    
+    
     
     
     
@@ -540,6 +721,7 @@ public class FullyImplementedTreeWalker extends Java8BaseVisitor<AST>
     String s = 
     "    for(ParseTree pt : ctx.children)\n" +
     "    {\n" +
+    "        System.out.println(ctx.getClass().getSimpleName());\n"+
     "        System.out.println(pt.getClass().getSimpleName());\n" +
     "        System.out.println(pt.getText());\n" +
     "        System.out.println();\n" +

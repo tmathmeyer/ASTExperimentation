@@ -12,5 +12,117 @@ public class Author
     {
         System.out.println(a+b);
         System.out.println(b+c);
+        System.out.println("this is not my homework");
+    }
+    
+    public void doWork()
+    {
+        System.out.println("asd asd asd");
+    }
+    
+    
+    public void add()
+    {
+        int a = 1+2, b=2+3, c=3+4;
+    }
+    
+    public void divide()
+    {
+        int a = 1/2;
+    }
+    
+    public void multiply()
+    {
+        int a = 1*2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
+    }
+    
+    public void subtract()
+    {
+        int a = 1-2;
     }
 }
